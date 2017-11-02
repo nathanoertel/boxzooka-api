@@ -1,0 +1,21 @@
+{
+	"name": "digitalclouddesigns/boxzooka-api-php",
+	"description": "PHP library for Boxzooka APIs",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Nathan Oertel",
+			"email": "nathan@digitalclouddesigns.com"
+		}
+	],
+	"minimum-stability": "stable",
+	"require": {
+		"php": ">=5.3.3"
+	},
+	"autoload": {
+		"psr-4": {
+			"BoxzookaAPI\\": "src/"
+		}
+	}
+}
