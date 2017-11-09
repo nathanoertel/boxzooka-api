@@ -1,14 +1,14 @@
 <?php
 namespace BoxzookaAPI\model;
 
-class Inbound extends AbstractRequestModel {
+class InboundCancellation extends AbstractRequestModel {
 
 	public function getNodeName() {
-		return 'Inbound';
+		return 'InboundCancellation';
 	}
 
 	public function getResponseModel() {
-		return new InboundResponse();
+		return new InboundCancellationResponse();
 	}
 
 	public function __construct() {
@@ -16,13 +16,12 @@ class Inbound extends AbstractRequestModel {
 		$this->addField('PO', array(
 			'type' => 'string',
 			'min' => 1,
-			'max' => 50,
-			'required' => true
+			'required' => true,
+			'array' => true
 		));
 		$this->addField('ContainerID', array(
 			'type' => 'string',
 			'min' => 1,
-			'max' => 50,
 			'required' => true,
 			'array' => true
 		));
@@ -51,15 +50,6 @@ class Inbound extends AbstractRequestModel {
 			'array' => true,
 			'required' => true,
 			'min' => 1
-		));
-		// item addition result fields
-		$this->addField('Status', array(
-			'type' => 'string',
-			'setter' => false
-		));
-		$this->addField('ErrorMessage', array(
-			'type' => 'string',
-			'setter' => false
 		));
 	}
 }

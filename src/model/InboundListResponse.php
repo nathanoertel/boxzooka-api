@@ -1,20 +1,14 @@
 <?php
 namespace BoxzookaAPI\model;
 
-class InboundResponse extends AbstractResponseModel {
+class InboundListResponse extends AbstractResponseModel {
 
 	public function getNodeName() {
-		return 'InboundResponse';
+		return 'InboundListResponse';
 	}
 	public function __construct() {
-		$this->addField('PO', array(
-			'type' => 'string',
-			'min' => 1,
-			'max' => 50,
-			'required' => true
-		));
 		$this->addField('Results', array(
-			'type' => 'BoxzookaAPI\model\Items'
+			'type' => 'BoxzookaAPI\model\Inbounds'
 		));
 		// item addition result fields
 		$this->addField('Status', array(

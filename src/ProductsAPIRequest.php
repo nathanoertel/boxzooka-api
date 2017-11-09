@@ -21,8 +21,4 @@ class ProductsAPIRequest extends AbstractRequest {
 	public function getEndpoint() {
 		return 'productsapi/';
 	}
-
-	protected function getResponse() {
-		return 'BoxzookaAPI\model\CatalogResponse';
-	}
 }

@@ -27,6 +27,12 @@ class Item extends AbstractModel {
 			'min' => 0,
 			'max' => null
 		));
+		$this->addField('UnitValue', array(
+			'type' => 'currency',
+			'required' => true,
+			'min' => 0,
+			'max' => null
+		));
 		$this->addField('CurrencyCode', array(
 			'type' => 'string',
 			'required' => true,
@@ -106,6 +112,12 @@ class Item extends AbstractModel {
 			'min' => 0,
 			'max' => null
 		));
+		$this->addField('UnitWeight', array(
+			'type' => 'float',
+			'required' => true,
+			'min' => 0,
+			'max' => null
+		));
 		$this->addField('WeightUnit', array(
 			'type' => 'string',
 			'required' => true,
@@ -149,6 +161,13 @@ class Item extends AbstractModel {
 			'required' => true,
 			'min' => 1
 		));
+		$this->addField('Received', array(
+			'type' => 'integer',
+		));
+		$this->addField('ItemStatus', array(
+			'type' => 'string',
+			'setter' => false
+		));
 		// item addition result fields
 		$this->addField('Status', array(
 			'type' => 'string',
@@ -156,7 +175,8 @@ class Item extends AbstractModel {
 		));
 		$this->addField('ErrorMessage', array(
 			'type' => 'string',
-			'setter' => false
+			'setter' => false,
+			'array' => true
 		));
 	}
 }

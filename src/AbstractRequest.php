@@ -10,7 +10,7 @@ abstract class AbstractRequest {
 	const ENV_PROD = 'prod';
 	const ENV_DEV = 'dev';
 	
-	const BASE_URL_PROD = 'https://merchant-api.jet.com/api';
+	const BASE_URL_PROD = 'https://b2c.boxzooka.com/';
 	const BASE_URL_DEV = 'https://sandbox2.boxzooka.com/';
 
 	const GET = 'GET';
@@ -177,8 +177,6 @@ abstract class AbstractRequest {
 	}
 
 	public abstract function getEndpoint();
-
-	protected abstract function getResponse();
 
 	public function getHeaders($url, $method, $headers = array()) {
 		$headers[] = $this->getPostContentType();

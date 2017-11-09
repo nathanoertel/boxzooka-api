@@ -25,7 +25,10 @@ abstract class AbstractModel {
 								$value = number_format(floatval($value), 2);
 								if($definition['min'] !== null && $value < $definition['min']) throw new \InvalidArgumentException($value.' is not valid value for '.$name.', minimium '.$definition['min'].' expected', 2);
 								if($definition['max'] !== null && $value > $definition['max']) throw new \InvalidArgumentException($value.' is not valid value for '.$name.', maximum '.$definition['max'].' expected', 2);
-								$this->data[$name] = number_format($value, 2);
+								if($definition['array']) {
+									if(!isset($this->data[$name])) $this->data[$name] = array();
+									$this->data[$name][] = number_format($value, 2);
+								} else $this->data[$name] = number_format($value, 2);
 							} else throw new \InvalidArgumentException($value.' is not valid type for '.$name.', '.$definition['type'].' expected', 1);
 							break;
 						case 'float':
@@ -33,7 +36,10 @@ abstract class AbstractModel {
 								$value = floatval($value);
 								if($definition['min'] !== null && $value < $definition['min']) throw new \InvalidArgumentException($value.' is not valid value for '.$name.', minimium '.$definition['min'].' expected', 2);
 								if($definition['max'] !== null && $value > $definition['max']) throw new \InvalidArgumentException($value.' is not valid value for '.$name.', maximum '.$definition['max'].' expected', 2);
-								$this->data[$name] = $value;
+								if($definition['array']) {
+									if(!isset($this->data[$name])) $this->data[$name] = array();
+									$this->data[$name][] = $value;
+								} else $this->data[$name] = $value;
 							} else throw new \InvalidArgumentException($value.' is not valid type for '.$name.', '.$definition['type'].' expected', 1);
 							break;
 						case 'integer':
@@ -41,7 +47,10 @@ abstract class AbstractModel {
 								$value = intval($value);
 								if($definition['min'] !== null && $value < $definition['min']) throw new \InvalidArgumentException($value.' is not valid value for '.$name.', minimium '.$definition['min'].' expected', 2);
 								if($definition['max'] !== null && $value > $definition['max']) throw new \InvalidArgumentException($value.' is not valid value for '.$name.', maximum '.$definition['max'].' expected', 2);
-								$this->data[$name] = $value;
+								if($definition['array']) {
+									if(!isset($this->data[$name])) $this->data[$name] = array();
+									$this->data[$name][] = $value;
+								} else $this->data[$name] = $value;
 							} else throw new \InvalidArgumentException($value.' is not valid type for '.$name.', '.$definition['type'].' expected', 1);
 							break;
 						case 'string':
@@ -49,7 +58,10 @@ abstract class AbstractModel {
 								if($definition['min'] !== null && strlen($value) < $definition['min']) throw new \LengthException($value.' is not valid value for '.$name.', minimium '.$definition['min'].' characters expected', 2);
 								if($definition['max'] !== null && strlen($value) > $definition['max']) throw new \LengthException($value.' is not valid value for '.$name.', maximum '.$definition['max'].' characters expected', 2);
 								if(isset($definition['accept']) && !in_array($value, $definition['accept'])) throw new \InvalidArgumentException($value.' is not valid value for '.$name.', not accepted value', 2);
-								$this->data[$name] = $value;
+								if($definition['array']) {
+									if(!isset($this->data[$name])) $this->data[$name] = array();
+									$this->data[$name][] = $value;
+								} else $this->data[$name] = $value;
 							} else throw new \InvalidArgumentException($value.' is not valid type for '.$name.', '.$definition['type'].' expected', 1);
 							break;
 						case 'timestamp':
@@ -58,7 +70,10 @@ abstract class AbstractModel {
 							}
 
 							if(is_numeric($value)) {
-								$this->data[$name] = date('Y-m-d H:i:s', $value);
+								if($definition['array']) {
+									if(!isset($this->data[$name])) $this->data[$name] = array();
+									$this->data[$name][] = date('Y-m-d H:i:s', $value);;
+								} else $this->data[$name] = date('Y-m-d H:i:s', $value);;
 							} else throw new \InvalidArgumentException($value.' is not valid type for '.$name.', '.$definition['type'].' expected', 1);
 							break;
 						default:
@@ -129,7 +144,21 @@ abstract class AbstractModel {
 							$object->fromXML($xml->$key);
 
 							$this->data[$key][] = $object;
-						} else $this->data[$key][] = $xml->$key;
+						} else {
+							switch($def['type']) {
+								case 'currency':
+								case 'float':
+									$value = (float)$xml->$key;
+									break;
+								case 'integer':
+									$value = (integer)$xml->$key;
+									break;
+								default:
+									$value = (string)$xml->$key;
+									break;
+							}
+							$this->data[$key][] = $value;
+						}
 					} else {
 						foreach($xml->$key as $value) {
 							if($def['object']) {
@@ -138,7 +167,21 @@ abstract class AbstractModel {
 								$object->fromXML($value);
 
 								$this->data[$key][] = $object;
-							} else $this->data[$key][] = $value;
+							} else {
+								switch($def['type']) {
+									case 'currency':
+									case 'float':
+										$value = (float)$value;
+										break;
+									case 'integer':
+										$value = (integer)$value;
+										break;
+									default:
+										$value = (string)$value;
+										break;
+								}
+								$this->data[$key][] = $value;
+							}
 						}
 					}
 				} else {
@@ -148,7 +191,21 @@ abstract class AbstractModel {
 						$object->fromXML($xml->$key);
 
 						$this->data[$key] = $object;
-					} else $this->data[$key] = $xml->$key;
+					} else {
+						switch($def['type']) {
+							case 'currency':
+							case 'float':
+								$value = (float)$xml->$key;
+								break;
+							case 'integer':
+								$value = (integer)$xml->$key;
+								break;
+							default:
+								$value = (string)$xml->$key;
+								break;
+						}
+						$this->data[$key] = $value;
+					}
 				}
 			}
 		}
