@@ -100,6 +100,99 @@ abstract class AbstractModel {
 		}
 	}
 
+	public function toJSON($output = true) {
+		$object = new \stdClass();
+
+		foreach($this->fields as $key => $def) {
+			if(!$def['index']) {
+				if(isset($this->data[$key])) {
+					if($def['array']) {
+						if($def['min'] !== null && count($this->data[$key]) < $def['min']) throw new \LengthException($key.' minimium '.$def['min'].' values expected', 2);
+						$object->$key = array();
+						foreach($this->data[$key] as $value) {
+							$index = $value->getNodeName();
+							if($index) {
+								if($def['object']) $object->$key[$index] = $value->toJSON(false)->$index;
+								else $object->$key[$index] = $value;
+							} else {
+								if($def['object']) $object->$key[] = $value->toJSON(false);
+								else $object->$key[] = $value;
+							}
+						}
+					} else {
+						if($def['object']) $object->$key = $this->data[$key]->toJSON(false);
+						else $object->$key = $this->data[$key];
+					}
+				}
+			}
+		}
+
+		if($output) return json_encode($object);
+		else return $object;
+	}
+
+	public function fromJSON($json) {
+		if(is_string($json)) $json = json_decode($json, true);
+
+		foreach($this->fields as $key => $def) {
+			if(isset($json[$key])) {
+				if($def['array']) {
+					$this->data[$key] = array();
+					foreach($json[$key] as $index => $value) {
+						if($def['object']) {
+							$className = $def['type'];
+							$object = new $className($index);
+							$node = $object->getNodeName();
+							if($node) {
+								$object->fromJSON($json[$key]);
+								$this->data[$key][$node] = $object;
+							} else {
+								$object->fromJSON($value);
+								$this->data[$key][] = $object;
+							}
+						} else {
+							switch($def['type']) {
+								case 'currency':
+								case 'float':
+									$value = (float)$value;
+									break;
+								case 'integer':
+									$value = (integer)$value;
+									break;
+								default:
+									$value = (string)$value;
+									break;
+							}
+							$this->data[$key][] = $value;
+						}
+					}
+				} else {
+					if($def['object']) {
+						$className = $def['type'];
+						$object = new $className();
+						$object->fromJSON($json[$key]);
+
+						$this->data[$key] = $object;
+					} else {
+						switch($def['type']) {
+							case 'currency':
+							case 'float':
+								$value = (float)$json[$key];
+								break;
+							case 'integer':
+								$value = (integer)$json[$key];
+								break;
+							default:
+								$value = (string)$json[$key];
+								break;
+						}
+						$this->data[$key] = $value;
+					}
+				}
+			}
+		}
+	}
+
 	public function toXML($xml = null) {
 		if($xml == null) {
 			$xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><'.$this->getNodeName().'></'.$this->getNodeName().'>');
@@ -213,6 +306,7 @@ abstract class AbstractModel {
 
 	protected function addField($key, $definition) {
 		if(!isset($definition['array'])) $definition['array'] = false;
+		if(!isset($definition['index'])) $definition['index'] = false;
 		if(!isset($definition['min'])) $definition['min'] = null;
 		if(!isset($definition['max'])) $definition['max'] = null;
 		if(!isset($definition['required'])) $definition['required'] = false;

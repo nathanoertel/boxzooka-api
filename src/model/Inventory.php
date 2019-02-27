@@ -4,60 +4,57 @@ namespace BoxzookaAPI\model;
 class Inventory extends AbstractModel {
 
 	public function getNodeName() {
-		return 'Inventory';
+		return null;
 	}
 
 	public function __construct() {
 		// item data fields
-		$this->addField('Sku', array(
+		$this->addField('sku', array(
 			'type' => 'string',
 			'required' => true,
 			'min' => 5,
 			'max' => 20
 		));
-		$this->addField('Quantity', array(
-			'type' => 'integer',
-			'required' => true,
-			'min' => 1
-		));
-		$this->addField('QuantityReady', array(
-			'type' => 'integer',
-			'required' => true,
-			'min' => 1
-		));
-		$this->addField('WarehouseID', array(
+		$this->addField('upc', array(
 			'type' => 'string',
+			'required' => true,
+			'min' => 1
+		));
+		$this->addField('item_name', array(
+			'type' => 'string',
+			'required' => true,
+			'min' => 1
+		));
+		$this->addField('style', array(
+			'type' => 'string',
+			'required' => true,
+			'min' => 1
+		));
+		$this->addField('color', array(
+			'type' => 'string',
+			'required' => true,
+			'min' => 1
+		));
+		$this->addField('size', array(
+			'type' => 'string',
+			'required' => true,
+			'min' => 1
+		));
+		$this->addField('retail_price', array(
+			'type' => 'float',
+			'required' => true,
+			'min' => 1
+		));
+		$this->addField('quantity', array(
+			'type' => 'integer',
+			'required' => true,
+			'min' => 1
+		));
+		$this->addField('warehouse_id', array(
+			'type' => 'integer',
 			'required' => true,
 			'min' => 6,
 			'max' => 6
-		));
-		$this->addField('WarehouseCity', array(
-			'type' => 'string',
-			'required' => true,
-			'min' => 3,
-			'max' => 100
-		));
-		$this->addField('WarehouseProvince', array(
-			'type' => 'string',
-			'required' => false,
-			'min' => 2,
-			'max' => 100
-		));
-		$this->addField('WarehouseCountry', array(
-			'type' => 'string',
-			'required' => false,
-			'min' => 2,
-			'max' => 2
-		));
-		// item addition result fields
-		$this->addField('Status', array(
-			'type' => 'string',
-			'setter' => false
-		));
-		$this->addField('ErrorMessage', array(
-			'type' => 'string',
-			'setter' => false,
-			'array' => true
 		));
 	}
 }
