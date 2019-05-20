@@ -108,20 +108,18 @@ abstract class AbstractModel {
 				if(isset($this->data[$key])) {
 					if($def['array']) {
 						if($def['min'] !== null && count($this->data[$key]) < $def['min']) throw new \LengthException($key.' minimium '.$def['min'].' values expected', 2);
-						$object->$key = array();
+						$result = array();
 						foreach($this->data[$key] as $value) {
 							$index = $value->getNodeName();
 							if($index) {
-								if($def['object']) $object->$key[$index] = $value->toJSON(false)->$index;
-								else $object->$key[$index] = $value;
+								if($def['object']) $result[$index] = $value->toJSON(false)->$index;
+								else $result[$index] = $value;
 							} else {
-								$entries = $object->$key;
-								if($def['object']) $entries[] = $value->toJSON(false);
-								else $entries[] = $value;
-								
-								$object->$key = $entries;
+								if($def['object']) $result[] = $value->toJSON(false);
+								else $result[] = $value;
 							}
 						}
+						$object->$key = $result;
 					} else {
 						if($def['object']) $object->$key = $this->data[$key]->toJSON(false);
 						else $object->$key = $this->data[$key];
