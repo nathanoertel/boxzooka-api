@@ -115,8 +115,11 @@ abstract class AbstractModel {
 								if($def['object']) $object->$key[$index] = $value->toJSON(false)->$index;
 								else $object->$key[$index] = $value;
 							} else {
-								if($def['object']) $object->$key[] = $value->toJSON(false);
-								else $object->$key[] = $value;
+								$entries = $object->$key;
+								if($def['object']) $entries[] = $value->toJSON(false);
+								else $entries[] = $value;
+								
+								$object->$key = $entries;
 							}
 						}
 					} else {
